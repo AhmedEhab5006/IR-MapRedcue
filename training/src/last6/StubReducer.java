@@ -1,10 +1,9 @@
-package posIndexFinal2024;
+package last6;
 import org.apache.hadoop.io.DoubleWritable;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 
 public class StubReducer extends Reducer<Text, Text, Text, Text> {
 
@@ -30,19 +30,18 @@ public class StubReducer extends Reducer<Text, Text, Text, Text> {
         });
         return docIds;
     }
-
-
-
+    
+    
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
         // Collect the positions for each word in each document
         Map <String , List<Integer> > positionalIndex = new HashMap<>();
         for (Text value : values) {
-
-            String docIDandPos[] = value.toString().split(":");
+        	
+        	String docIDandPos[] = value.toString().split(":");
             String docID = docIDandPos[0];
             int pos = Integer.parseInt(docIDandPos[1]);
-
-            //============================================
+            
+          //============================================
 
             if (!positionalIndex.containsKey(docID)) {
                 positionalIndex.put(docID, new ArrayList<Integer>());
@@ -53,17 +52,17 @@ public class StubReducer extends Reducer<Text, Text, Text, Text> {
         }
         List<String> sortedDocIds = sortDocIdsNumerically(positionalIndex);
         StringBuilder indexBuilder = new StringBuilder();
-
+        
         for (String docId : sortedDocIds) {
             List<Integer> positions = positionalIndex.get(docId);
 
 
 
             Collections.sort(positions);
-
+            
             StringBuilder positionsBuilder = new StringBuilder();
             for (int i = 0; i < positions.size(); i++) {
-                positionsBuilder.append(positions.get(i));
+                positionsBuilder.append(positions.get(i) + 1);
                 if (i < positions.size() - 1) {
                     positionsBuilder.append(",");
                 }
@@ -76,11 +75,13 @@ public class StubReducer extends Reducer<Text, Text, Text, Text> {
         if (indexBuilder.length() > 0) {
             indexBuilder.setLength(indexBuilder.length() - 1);
         }
-
-
+        
+        
         context.write(key, new Text(indexBuilder.toString()));
 
     }
 
 }
 
+            
+        

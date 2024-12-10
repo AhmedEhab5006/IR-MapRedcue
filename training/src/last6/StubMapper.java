@@ -1,4 +1,4 @@
-package posIndexFinal2024;
+package last6;
 
 
 import org.apache.hadoop.io.IntWritable;
@@ -13,8 +13,6 @@ public class StubMapper extends Mapper<LongWritable, Text, Text, Text> {
 
     private Text word = new Text();
     private Text position = new Text();
-
-
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
         String[] parts = value.toString().split("\t");
@@ -22,15 +20,14 @@ public class StubMapper extends Mapper<LongWritable, Text, Text, Text> {
         // Check if the line has both a docID and content
         if (parts.length >= 2) {
             String docID = parts[0];   // Document ID
-            String line = parts[1];    // Content of the document
-
-            // Split the content into words using space as delimiter
+            String line = parts[1];   // Split the content into words using space as delimiter
             String[] words = line.split("\\s+");
 
 
             for (int i = 0; i < words.length; i++) {
                 // Clean and lowercase the word
                 String cleanWord = words[i].replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+                
 
                 // Check if the cleaned word is not empty
                 if (!cleanWord.isEmpty()) {
@@ -43,4 +40,3 @@ public class StubMapper extends Mapper<LongWritable, Text, Text, Text> {
         }
     }
 }
-
